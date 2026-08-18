@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Transferencia bancaria/title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:'Segoe UI',Arial;background:#f0f4f8;padding:20px}
+.box{max-width:650px;margin:auto;background:white;padding:30px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.1);border-top:5px solid #28a745}
+h1{color:#28a745;margin:0;font-size:22px;text-align:center}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:14px;margin-bottom:20px;font-weight:bold;color:#856404;border-radius:6px;font-size:14px;text-align:center}
+label{font-weight:600;margin-top:12px;display:block;color:#333}
+input{width:96%;padding:13px;margin:6px 0 16px;border:1px solid #ccc;border-radius:8px;font-size:15px}
+.btn{background:#28a745;color:white;padding:15px;width:100%;border:none;border-radius:10px;font-size:17px;font-weight:bold;cursor:pointer}
+.btn-download{background:#007bff;margin-top:10px}
+.share-btns{display:none;margin-top:25px}
+.share-btns a{display:block;text-align:center;padding:14px;margin:10px 0;border-radius:10px;text-decoration:none;font-weight:bold;color:white}
+.whatsapp{background:#25D366} .email{background:#D93025}
+#ticket{margin-top:25px;padding:25px;border:2px dashed #28a745;background:#f8fff9;border-radius:10px}
+.fake-stamp{color:#dc3545;border:3px solid #dc3545;padding:10px;text-align:center;font-weight:bold;border-radius:8px;margin-bottom:18px}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1> Transferencia bancaria</h1>
+  <div class="warning">Comuníquese con su prestamista para retirar su dinero.</div>
+  
+  <label>Apellido del Cliente</label><input id="nom" placeholder="GARCIA">
+  <label>Nombre del Cliente</label><input id="prenom" placeholder="JUAN">
+  <label>Monto del Préstamo</label><input id="montant" placeholder="1.000.000 XAF">
+  <label>Correo del Cliente</label><input id="email" placeholder="correo@ejemplo.com">
+  
+  <button class="btn" onclick="generer()">Generar Comprobante de Simulación</button>
+
+  <div id="ticket" style="display:none">
+    <div class="fake-stamp"></div>
+    <p><b>Tipo:</b> Comprobante de Simulación de Préstamo</p>
+    <p><b>Beneficiario:</b> <span id="r_nom"></span> <span id="r_prenom"></span></p>
+    <p><b>Monto transferido:</b> <span id="r_montant"></span></p>
+    <p><b>Referencia:</b> SIM-PRE-<span id="r_ref"></span></p>
+    <p><b>Fecha y Hora:</b> <span id="r_date"></span></p>
+  </div>
+
+  <button class="btn btn-download" id="btn-download" style="display:none" onclick="downloadImage()">📸 Descargar Imagen</button>
+
+  <div class="share-btns" id="share">
+    <a id="btn-whatsapp" class="whatsapp" target="_blank">📱 Enviar por WhatsApp</a>
+    <a id="btn-email" class="email" target="_blank">📧 Enviar por Correo</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+function generer(){
+  let nom = document.getElementById("nom").value.toUpperCase();
+  let prenom = document.getElementById("prenom").value.toUpperCase();
+  let email = document.getElementById("email").value;
+  let montant = document.getElementById("montant").value;
+  let ref = Math.floor(Math.random()*900000)+100000;
+  let date = new Date().toLocaleString("es-ES");
+
+  document.getElementById("r_nom").innerText = nom;
+  document.getElementById("r_prenom").innerText = prenom;
+  document.getElementById("r_montant").innerText = montant;
+  document.getElementById("r_ref").innerText = ref;
+  document.getElementById("r_date").innerText = date;
+  
+  document.getElementById("ticket").style.display = "block";
+  document.getElementById("btn-download").style.display = "block";
+  document.getElementById("share").style.display = "block";
+
+  let message = `*** - ***\n\nEstimado/a ${nom} ${prenom},\n\nEste es un comprobante de SIMULACIÓN de préstamo por: ${montant}\nReferencia: SIM-PRE-${ref}\nFecha: ${date}\n\nIMPORTANTE: ESTO NO ES UN PAGO REAL. ES SOLO UNA DEMO.`;
+
+  document.getElementById("btn-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  document.getElementById("btn-email").href = `mailto:${email}?subject=[SIMULACIÓN] Comprobante de Préstamo&body=${encodeURIComponent(message)}`;
+}
+
+function downloadImage(){
+  html2canvas(document.getElementById("ticket"), {scale: 2}).then(canvas => {
+    let link = document.createElement("a");
+    link.download = "comprobante-simulacion-prestamo.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+</script>
+</body>
+</html>
